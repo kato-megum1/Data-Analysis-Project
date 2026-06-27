@@ -33,7 +33,7 @@ class UploadedFile:
 class AnalysisService:
     def __init__(self, root_dir: str):
         self.root_dir = root_dir
-        self.sessions_dir = os.path.join(root_dir, "output", "sessions")
+        self.sessions_dir = os.environ.get("ANALYSIS_SESSIONS_DIR") or default_sessions_dir(root_dir)
         os.makedirs(self.sessions_dir, exist_ok=True)
 
     # ------------------------------------------------------------ Public API
@@ -333,3 +333,9 @@ def strip_secrets(config: Dict[str, Any]) -> Dict[str, Any]:
     clean = dict(config or {})
     clean.pop("api_key", None)
     return clean
+
+
+def default_sessions_dir(root_dir: str) -> str:
+    if os.environ.get("RENDER"):
+        return os.path.join("/tmp", "data-analysis-sessions")
+    return os.path.join(root_dir, "output", "sessions")
