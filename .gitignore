@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.workbuddy/
+.venv/
+venv/
+
+server.log
+server-dev*.log
+output/
+
+data/new_Retail Analysis.xlsx
+
+.env
+.env.*
+!.env.example

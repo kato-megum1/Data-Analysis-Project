@@ -1,0 +1,28 @@
+{
+  "file_name": "test_retail.xlsx",
+  "file_path": "",
+  "dimensions": [
+    {"idx": 0, "name": "日期", "displayName": "日期"},
+    {"idx": 1, "name": "地区", "displayName": "地区"},
+    {"idx": 2, "name": "品类", "displayName": "品类"},
+    {"idx": 3, "name": "渠道", "displayName": "渠道"}
+  ],
+  "metrics": [
+    {"idx": 4, "name": "订单量", "displayName": "订单量", "agg": "sum"},
+    {"idx": 5, "name": "销售额", "displayName": "销售额", "agg": "sum"},
+    {"idx": 6, "name": "成本", "displayName": "成本", "agg": "sum"}
+  ],
+  "formulas": [
+    {"name": "利润", "expression": "销售额 - 成本"},
+    {"name": "利润率", "expression": "利润 / 销售额"}
+  ],
+  "fences": [
+    {"name": "利润率", "min": 0.1, "max": 0.8}
+  ],
+  "anomalies": [
+    {"name": "销售额", "downThreshold": 20, "upThreshold": 30},
+    {"name": "利润", "downThreshold": 25, "upThreshold": 35}
+  ],
+  "drill_order": ["地区", "品类", "渠道"],
+  "api_key": ""
+}

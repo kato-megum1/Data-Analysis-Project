@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>单表经营分析 AI 应用</title>
+<style>
+:root{--primary:#1a73e8;--success:#188038;--danger:#c5221f;--warn:#b06000;--bg:#f6f7f9;--card:#fff;--border:#dadce0;--text:#202124;--muted:#5f6368}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif;line-height:1.6}
+.app{max-width:1180px;margin:0 auto;padding:24px}.top{display:flex;align-items:center;gap:16px;margin-bottom:18px}.top h1{font-size:24px;margin:0;color:var(--primary)}.top p{margin:4px 0 0;color:var(--muted);font-size:13px}.spacer{flex:1}
+.btn{border:0;border-radius:6px;padding:9px 14px;font-size:14px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}.btn:disabled{opacity:.55;cursor:not-allowed}.primary{background:var(--primary);color:#fff}.secondary{background:#fff;border:1px solid var(--border);color:var(--text)}.success{background:var(--success);color:#fff}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px}.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:14px}.card h2{font-size:17px;margin:0 0 12px;color:var(--primary)}.card h3{font-size:14px;margin:14px 0 8px}
+label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}input,textarea,select{width:100%;border:1px solid var(--border);border-radius:6px;padding:9px 10px;font:inherit;background:#fff}textarea{resize:vertical}.row{display:flex;gap:10px;align-items:center}.row>*{flex:1}
+.hint{font-size:12px;color:var(--muted);margin-top:6px}.status{font-size:13px;padding:10px 12px;border-radius:6px;background:#e8f0fe;color:var(--primary);margin-top:10px}.error{background:#fce8e6;color:var(--danger)}.ok{background:#e6f4ea;color:var(--success)}
+.pill{display:inline-block;border-radius:12px;padding:2px 8px;background:#e8f0fe;color:var(--primary);font-size:12px;margin:2px}.warn{background:#fef7e0;color:var(--warn)}.danger{background:#fce8e6;color:var(--danger)}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:7px 8px;border-bottom:1px solid #eee;text-align:left}th{background:#f8f9fa;color:var(--muted)}
+.json{font-family:Consolas,Menlo,monospace;font-size:12px;min-height:360px}.chat{height:310px;overflow:auto;border:1px solid var(--border);border-radius:6px;padding:10px;background:#fafafa}.msg{margin:0 0 10px;font-size:13px}.msg b{color:var(--primary)}
+.drawer{position:fixed;right:0;top:0;bottom:0;width:min(520px,100%);background:#fff;border-left:1px solid var(--border);box-shadow:-8px 0 24px #0002;padding:20px;overflow:auto;z-index:5;display:none}.drawer.open{display:block}.overlay{position:fixed;inset:0;background:#0003;display:none;z-index:4}.overlay.open{display:block}
+iframe{width:100%;height:640px;border:1px solid var(--border);border-radius:8px;background:#fff}
+@media(max-width:920px){.grid{grid-template-columns:1fr}.top{align-items:flex-start}.top .spacer{display:none}}
+</style>
+</head>
+<body>
+<div class="overlay" id="overlay" onclick="closeSettings()"></div>
+<aside class="drawer" id="settingsDrawer">
+  <div class="row"><h2 style="margin:0;color:var(--primary)">设置</h2><button class="btn secondary" style="flex:0" onclick="closeSettings()">关闭</button></div>
+  <div class="card">
+    <h3>API Key</h3>
+    <input type="password" id="settingApiKey" placeholder="sk-...">
+    <p class="hint">仅保存在浏览器 localStorage。提交分析时随请求发送。</p>
+  </div>
+  <div class="card">
+    <h3>Prompt 模板</h3>
+    <label>指标体系 Agent</label><textarea id="promptMetricSystem" rows="4"></textarea>
+    <label>Config Copilot</label><textarea id="promptConfigCopilot" rows="4"></textarea>
+    <label>Critic Agent</label><textarea id="promptCritic" rows="4"></textarea>
+    <label>Report Writer</label><textarea id="promptReport" rows="4"></textarea>
+    <label>Chat</label><textarea id="promptChat" rows="4"></textarea>
+  </div>
+  <div class="card">
+    <h3>会话记忆</h3>
+    <div id="memoryList" class="hint">暂无本地会话。</div>
+    <button class="btn secondary" onclick="clearMemory()">清空本地会话记忆</button>
+  </div>
+  <button class="btn primary" onclick="saveSettings()">保存设置</button>
+</aside>
+
+<main class="app">
+  <header class="top">
+    <div>
+      <h1>单表经营分析 AI 应用</h1>
+      <p>上传一张表，确认指标体系，通过配置助手微调后生成稳定经营报告。</p>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn secondary" onclick="openSettings()">设置</button>
+  </header>
+
+  <section class="card">
+    <h2>1. 上传单表并生成指标体系</h2>
+    <div class="row">
+      <div><label>数据文件</label><input type="file" id="fileInput" accept=".xlsx,.xls,.csv"></div>
+      <div><label>字段说明（可选）</label><input type="file" id="fieldDocInput" accept=".txt,.md,.xlsx,.xls,.csv"></div>
+    </div>
+    <label style="margin-top:10px">业务背景 / 分析目标（可选）</label>
+    <textarea id="backgroundInput" rows="3" placeholder="例如：本月销售下滑，希望定位核心原因和重点维度。"></textarea>
+    <div class="row" style="margin-top:12px">
+      <button class="btn primary" id="profileBtn" onclick="runProfile()">生成指标体系草案</button>
+      <div id="profileStatus" class="hint"></div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <section>
+      <div class="card" id="metricSystemCard" style="display:none">
+        <h2>2. 指标体系草案</h2>
+        <div id="metricSystemView"></div>
+      </div>
+      <div class="card" id="configCard" style="display:none">
+        <h2>3. 确认 / 编辑配置</h2>
+        <p class="hint">配置助手会更新这里的 JSON。你也可以直接编辑，生成报告前会提交这份确认配置。</p>
+        <textarea id="configEditor" class="json"></textarea>
+        <div class="row" style="margin-top:10px">
+          <button class="btn success" id="analyzeBtn" onclick="runAnalyze()">确认配置并生成报告</button>
+          <button class="btn secondary" onclick="formatConfig()">格式化 JSON</button>
+        </div>
+      </div>
+      <div class="card" id="reportCard" style="display:none">
+        <h2>4. 经营分析报告</h2>
+        <div id="reportStatus" class="status ok"></div>
+        <iframe id="reportFrame"></iframe>
+      </div>
+    </section>
+
+    <aside>
+      <div class="card">
+        <h2>配置对话助手</h2>
+        <div id="configChat" class="chat"><p class="msg"><b>助手</b>：生成指标体系后，可以说“把利润率阈值改成 15%-60%”或“把销售额设为核心指标”。</p></div>
+        <textarea id="configMessage" rows="3" placeholder="输入配置修改要求..."></textarea>
+        <div class="row" style="margin-top:8px">
+          <button class="btn primary" onclick="sendConfigChat()">发送修改</button>
+          <button class="btn secondary" onclick="undoConfigPatch()">撤销</button>
+        </div>
+      </div>
+      <div class="card" id="reportChatCard" style="display:none">
+        <h2>报告问答</h2>
+        <div id="reportChat" class="chat"></div>
+        <textarea id="reportQuestion" rows="3" placeholder="问报告里的趋势、异常、统计..."></textarea>
+        <button class="btn primary" style="margin-top:8px" onclick="sendReportChat()">提问</button>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<script>
+const API_BASE = '';
+let profileSessionId = '';
+let analysisSessionId = '';
+let currentMetricSystem = null;
+let currentConfig = null;
+
+const defaultPrompts = {
+  metric_system: '根据字段画像生成保守可验证的指标体系草案。',
+  config_copilot: '把用户自然语言转换为安全的 config patch。',
+  critic: '审查洞察是否被 facts 支撑，只输出结构化 verdicts。',
+  report: '基于 final_insights 和 facts 生成经营分析报告。',
+  chat: '只基于当前 session context 回答问题。'
+};
+
+function getSettings(){
+  return JSON.parse(localStorage.getItem('analysisAppSettings') || JSON.stringify({apiKey:'', prompts: defaultPrompts, sessions: []}));
+}
+function saveSettings(){
+  const s = getSettings();
+  s.apiKey = document.getElementById('settingApiKey').value.trim();
+  s.prompts = {
+    metric_system: document.getElementById('promptMetricSystem').value,
+    config_copilot: document.getElementById('promptConfigCopilot').value,
+    critic: document.getElementById('promptCritic').value,
+    report: document.getElementById('promptReport').value,
+    chat: document.getElementById('promptChat').value
+  };
+  localStorage.setItem('analysisAppSettings', JSON.stringify(s));
+  closeSettings();
+}
+function loadSettings(){
+  const s = getSettings();
+  document.getElementById('settingApiKey').value = s.apiKey || '';
+  document.getElementById('promptMetricSystem').value = s.prompts?.metric_system || defaultPrompts.metric_system;
+  document.getElementById('promptConfigCopilot').value = s.prompts?.config_copilot || defaultPrompts.config_copilot;
+  document.getElementById('promptCritic').value = s.prompts?.critic || defaultPrompts.critic;
+  document.getElementById('promptReport').value = s.prompts?.report || defaultPrompts.report;
+  document.getElementById('promptChat').value = s.prompts?.chat || defaultPrompts.chat;
+  renderMemory();
+}
+function openSettings(){ loadSettings(); document.getElementById('overlay').classList.add('open'); document.getElementById('settingsDrawer').classList.add('open'); }
+function closeSettings(){ document.getElementById('overlay').classList.remove('open'); document.getElementById('settingsDrawer').classList.remove('open'); }
+function clearMemory(){ const s=getSettings(); s.sessions=[]; localStorage.setItem('analysisAppSettings',JSON.stringify(s)); renderMemory(); }
+function renderMemory(){
+  const s=getSettings(); const list=s.sessions||[];
+  document.getElementById('memoryList').innerHTML = list.length ? list.map(x=>`<div>${escapeHtml(x.session_id)} · ${escapeHtml(x.file_name||'')}</div>`).join('') : '暂无本地会话。';
+}
+function rememberSession(session){
+  const s=getSettings(); s.sessions=s.sessions||[];
+  s.sessions.unshift(session); s.sessions=s.sessions.slice(0,20);
+  localStorage.setItem('analysisAppSettings', JSON.stringify(s));
+}
+function requireApiKey(){
+  const key = getSettings().apiKey || '';
+  return key;
+}
+function prompts(){ return getSettings().prompts || {}; }
+
+async function runProfile(){
+  try{
+    const key=requireApiKey();
+    const file=document.getElementById('fileInput').files[0];
+    if(!file) throw new Error('请上传数据文件');
+    setStatus('profileStatus','正在生成指标体系...',false);
+    document.getElementById('profileBtn').disabled=true;
+    const fd=new FormData();
+    fd.append('api_key',key);
+    fd.append('file',file);
+    fd.append('background',document.getElementById('backgroundInput').value);
+    fd.append('prompts',JSON.stringify(prompts()));
+    const doc=document.getElementById('fieldDocInput').files[0]; if(doc) fd.append('field_doc',doc);
+    const data=await postForm('/profile',fd);
+    profileSessionId=data.profile_session_id;
+    currentMetricSystem=data.metric_system;
+    currentConfig=data.editable_config || data.recommended_config;
+    renderMetricSystem(data);
+    setConfig(currentConfig);
+    document.getElementById('metricSystemCard').style.display='block';
+    document.getElementById('configCard').style.display='block';
+    setStatus('profileStatus',`指标体系已生成：${profileSessionId}`,true);
+  }catch(e){ setStatus('profileStatus',e.message,false,true); }
+  finally{ document.getElementById('profileBtn').disabled=false; }
+}
+
+async function sendConfigChat(){
+  try{
+    if(!profileSessionId) throw new Error('请先生成指标体系草案');
+    const msg=document.getElementById('configMessage').value.trim();
+    if(!msg) return;
+    appendMsg('configChat','你',msg);
+    const data=await postJson('/config-chat',{
+      api_key: requireApiKey(),
+      profile_session_id: profileSessionId,
+      message: msg,
+      current_config: readConfig(),
+      prompts: prompts()
+    });
+    setConfig(data.updated_config);
+    appendMsg('configChat','助手',data.reply + renderWarningsText(data.warnings));
+    document.getElementById('configMessage').value='';
+  }catch(e){ appendMsg('configChat','系统',e.message); }
+}
+
+async function undoConfigPatch(){
+  try{
+    if(!profileSessionId) throw new Error('没有可撤销的配置会话');
+    const data=await postJson('/config-chat',{api_key:requireApiKey(),profile_session_id:profileSessionId,undo:true});
+    setConfig(data.updated_config);
+    appendMsg('configChat','助手',data.reply);
+  }catch(e){ appendMsg('configChat','系统',e.message); }
+}
+
+async function runAnalyze(){
+  try{
+    const key=requireApiKey();
+    const config=readConfig();
+    document.getElementById('analyzeBtn').disabled=true;
+    const fd=new FormData();
+    fd.append('api_key',key);
+    fd.append('profile_session_id',profileSessionId);
+    fd.append('config',JSON.stringify(config));
+    fd.append('prompts',JSON.stringify(prompts()));
+    const data=await postForm('/analyze',fd);
+    analysisSessionId=data.session_id;
+    rememberSession({session_id:data.session_id,file_name:config.file_name,created_at:new Date().toISOString()});
+    document.getElementById('reportCard').style.display='block';
+    document.getElementById('reportChatCard').style.display='block';
+    document.getElementById('reportStatus').textContent=`报告已生成：${data.session_id} · ${data.summary.total} 条洞察 · Critic 修订 ${data.summary.critic_revisions || 0} 条`;
+    document.getElementById('reportFrame').src=`/report/${data.session_id}`;
+  }catch(e){ alert(e.message); }
+  finally{ document.getElementById('analyzeBtn').disabled=false; }
+}
+
+async function sendReportChat(){
+  try{
+    if(!analysisSessionId) throw new Error('请先生成报告');
+    const q=document.getElementById('reportQuestion').value.trim(); if(!q) return;
+    appendMsg('reportChat','你',q);
+    const data=await postJson('/chat',{session_id:analysisSessionId,question:q});
+    appendMsg('reportChat','助手',data.answer);
+    document.getElementById('reportQuestion').value='';
+  }catch(e){ appendMsg('reportChat','系统',e.message); }
+}
+
+function renderMetricSystem(data){
+  const ms=data.metric_system || {};
+  const preview=data.data_preview || {};
+  const html=[
+    `<p><span class="pill">模板：${escapeHtml(ms.template||'general')}</span><span class="pill">来源：${escapeHtml(ms.source||data.source||'')}</span></p>`,
+    `<h3>数据预览</h3><p class="hint">${preview.rows||0} 行 · ${preview.columns||0} 列</p>`,
+    `<h3>核心指标</h3><p>${(ms.primary_metrics||[]).map(x=>`<span class="pill">${escapeHtml(x)}</span>`).join('')||'暂无'}</p>`,
+    `<h3>指标分组</h3>${Object.entries(ms.metric_groups||{}).map(([k,v])=>`<p><b>${escapeHtml(k)}</b> ${(v||[]).map(x=>`<span class="pill">${escapeHtml(x)}</span>`).join('')}</p>`).join('')}`,
+    `<h3>Warnings</h3><p>${(data.warnings||ms.warnings||[]).map(x=>`<span class="pill warn">${escapeHtml(x)}</span>`).join('')||'无'}</p>`
+  ].join('');
+  document.getElementById('metricSystemView').innerHTML=html;
+}
+
+function setConfig(cfg){ currentConfig=cfg; document.getElementById('configEditor').value=JSON.stringify(cfg,null,2); }
+function readConfig(){ return JSON.parse(document.getElementById('configEditor').value); }
+function formatConfig(){ setConfig(readConfig()); }
+function appendMsg(id,who,text){ const box=document.getElementById(id); box.innerHTML+=`<p class="msg"><b>${escapeHtml(who)}</b>：${escapeHtml(text)}</p>`; box.scrollTop=box.scrollHeight; }
+function setStatus(id,text,ok=false,err=false){ const el=document.getElementById(id); el.className=err?'status error':ok?'status ok':'status'; el.textContent=text; }
+function renderWarningsText(warnings){ return warnings&&warnings.length ? `\n提示：${warnings.join('；')}` : ''; }
+async function postForm(path,fd){ const r=await fetch(API_BASE+path,{method:'POST',body:fd}); const data=await r.json(); if(!data.success) throw new Error(data.error||'请求失败'); return data; }
+async function postJson(path,payload){ const r=await fetch(API_BASE+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); const data=await r.json(); if(!data.success) throw new Error(data.error||'请求失败'); return data; }
+function escapeHtml(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+loadSettings();
+</script>
+</body>
+</html>

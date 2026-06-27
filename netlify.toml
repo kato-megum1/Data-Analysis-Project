@@ -1,0 +1,33 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/profile"
+  to = "/.netlify/functions/api"
+  status = 200
+
+[[redirects]]
+  from = "/config-chat"
+  to = "/.netlify/functions/api"
+  status = 200
+
+[[redirects]]
+  from = "/analyze"
+  to = "/.netlify/functions/api"
+  status = 200
+
+[[redirects]]
+  from = "/chat"
+  to = "/.netlify/functions/api"
+  status = 200
+
+[[redirects]]
+  from = "/report/*"
+  to = "/.netlify/functions/api"
+  status = 200
+
+[[redirects]]
+  from = "/context/*"
+  to = "/.netlify/functions/api"
+  status = 200
