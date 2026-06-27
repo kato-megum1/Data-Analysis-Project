@@ -59,7 +59,9 @@ def test_invalid_formula_from_llm_is_warning():
             }
 
     out = MetricSystemAgent(llm=StubLLM()).draft(_retail_df())
-    assert out["recommended_config"]["formulas"] == []
+    formulas = out["recommended_config"]["formulas"]
+    assert all(f["name"] != "坏公式" for f in formulas)
+    assert formulas
     assert any("坏公式" in w for w in out["warnings"])
 
 

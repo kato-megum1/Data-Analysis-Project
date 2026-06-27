@@ -1,0 +1,797 @@
+{
+  "config": {
+    "file_name": "new_Retail Analysis.xlsx",
+    "report_title": "零售经营分析报告 - 报告 Agent 测试样例"
+  },
+  "schema": {
+    "primary_metrics": [
+      "Total Amt",
+      "Qty",
+      "gross_margin_rate"
+    ],
+    "analysis_metrics": [
+      "Total Amt",
+      "Qty",
+      "Tax",
+      "avg_order_value",
+      "gross_margin",
+      "gross_margin_rate",
+      "discount_rate"
+    ],
+    "derived_metric_names": [
+      "avg_order_value",
+      "gross_margin",
+      "gross_margin_rate",
+      "discount_rate"
+    ],
+    "dimensions": [
+      {
+        "name": "Date",
+        "display_name": "日期",
+        "type": "date"
+      },
+      {
+        "name": "Store Type",
+        "display_name": "门店类型",
+        "type": "category"
+      },
+      {
+        "name": "City",
+        "display_name": "城市",
+        "type": "category"
+      },
+      {
+        "name": "Product Category",
+        "display_name": "商品品类",
+        "type": "category"
+      },
+      {
+        "name": "Payment Method",
+        "display_name": "支付方式",
+        "type": "category"
+      }
+    ],
+    "metrics": [
+      {
+        "name": "Total Amt",
+        "display_name": "销售额",
+        "agg": "sum"
+      },
+      {
+        "name": "Qty",
+        "display_name": "销量",
+        "agg": "sum"
+      },
+      {
+        "name": "Tax",
+        "display_name": "税额",
+        "agg": "sum"
+      },
+      {
+        "name": "avg_order_value",
+        "display_name": "客单价",
+        "agg": "mean"
+      },
+      {
+        "name": "gross_margin",
+        "display_name": "毛利额",
+        "agg": "sum"
+      },
+      {
+        "name": "gross_margin_rate",
+        "display_name": "毛利率",
+        "agg": "mean"
+      },
+      {
+        "name": "discount_rate",
+        "display_name": "折扣率",
+        "agg": "mean"
+      }
+    ],
+    "formulas": [
+      {
+        "name": "avg_order_value",
+        "display_name": "客单价",
+        "expression": "Total Amt / Qty",
+        "parts": [
+          "Total Amt",
+          "Qty"
+        ]
+      },
+      {
+        "name": "gross_margin",
+        "display_name": "毛利额",
+        "expression": "Total Amt - Cost",
+        "parts": [
+          "Total Amt",
+          "Cost"
+        ]
+      },
+      {
+        "name": "gross_margin_rate",
+        "display_name": "毛利率",
+        "expression": "gross_margin / Total Amt",
+        "parts": [
+          "gross_margin",
+          "Total Amt"
+        ]
+      },
+      {
+        "name": "discount_rate",
+        "display_name": "折扣率",
+        "expression": "(MRP - Rate) / MRP",
+        "parts": [
+          "MRP",
+          "Rate"
+        ]
+      }
+    ],
+    "drill_order": [
+      "Date",
+      "Store Type",
+      "City",
+      "Product Category",
+      "Payment Method"
+    ]
+  },
+  "data": {
+    "summary": {
+      "rows": 23053,
+      "columns": 15,
+      "date_range": "2023-01-01 至 2023-12-31",
+      "granularity": "month",
+      "missing_cells": 128,
+      "duplicate_rows": 0,
+      "profile_note": "样例基于零售交易数据结构构造，用于测试报告生成可读性。"
+    }
+  },
+  "facts": {
+    "metrics": {
+      "Total Amt": {
+        "count": 23053,
+        "sum": 13874290.25,
+        "mean": 601.85,
+        "median": 428.0,
+        "std": 520.61,
+        "min": 12.0,
+        "max": 9820.0,
+        "q25": 198.0,
+        "q75": 788.0,
+        "missing": 0
+      },
+      "Qty": {
+        "count": 23053,
+        "sum": 46210,
+        "mean": 2.01,
+        "median": 2.0,
+        "std": 1.12,
+        "min": 1.0,
+        "max": 18.0,
+        "q25": 1.0,
+        "q75": 3.0,
+        "missing": 0
+      },
+      "Tax": {
+        "count": 23053,
+        "sum": 1016824.36,
+        "mean": 44.11,
+        "median": 31.35,
+        "std": 40.28,
+        "min": 0.0,
+        "max": 774.3,
+        "q25": 14.8,
+        "q75": 58.6,
+        "missing": 0
+      },
+      "avg_order_value": {
+        "count": 23053,
+        "sum": 6934421.8,
+        "mean": 300.82,
+        "median": 257.4,
+        "std": 172.15,
+        "min": 12.0,
+        "max": 1498.0,
+        "q25": 166.0,
+        "q75": 386.7,
+        "missing": 0
+      },
+      "gross_margin": {
+        "count": 23053,
+        "sum": 3982101.71,
+        "mean": 172.73,
+        "median": 118.4,
+        "std": 156.22,
+        "min": -218.0,
+        "max": 2810.2,
+        "q25": 53.2,
+        "q75": 221.9,
+        "missing": 0
+      },
+      "gross_margin_rate": {
+        "count": 23053,
+        "sum": 6629.73,
+        "mean": 0.2876,
+        "median": 0.3012,
+        "std": 0.1168,
+        "min": -0.18,
+        "max": 0.72,
+        "q25": 0.218,
+        "q75": 0.365,
+        "missing": 0
+      },
+      "discount_rate": {
+        "count": 23053,
+        "sum": 3025.62,
+        "mean": 0.1312,
+        "median": 0.105,
+        "std": 0.0921,
+        "min": 0.0,
+        "max": 0.68,
+        "q25": 0.052,
+        "q75": 0.188,
+        "missing": 0
+      }
+    },
+    "trends": [
+      {
+        "id": "t_Total Amt",
+        "metric": "Total Amt",
+        "display_name": "销售额",
+        "periods": [
+          "2023-07",
+          "2023-08",
+          "2023-09",
+          "2023-10",
+          "2023-11",
+          "2023-12"
+        ],
+        "series": [
+          {
+            "period": "2023-07",
+            "value": 1179200.35
+          },
+          {
+            "period": "2023-08",
+            "value": 1238410.2
+          },
+          {
+            "period": "2023-09",
+            "value": 1203920.4
+          },
+          {
+            "period": "2023-10",
+            "value": 1328800.7
+          },
+          {
+            "period": "2023-11",
+            "value": 1399460.8
+          },
+          {
+            "period": "2023-12",
+            "value": 1084210.5
+          }
+        ],
+        "latest": 1084210.5,
+        "previous": 1399460.8,
+        "change_pct": -22.52,
+        "slope": -8742.11,
+        "overall_trend": "下降",
+        "points": 6
+      },
+      {
+        "id": "t_Qty",
+        "metric": "Qty",
+        "display_name": "销量",
+        "periods": [
+          "2023-07",
+          "2023-08",
+          "2023-09",
+          "2023-10",
+          "2023-11",
+          "2023-12"
+        ],
+        "series": [
+          {
+            "period": "2023-07",
+            "value": 3875
+          },
+          {
+            "period": "2023-08",
+            "value": 4044
+          },
+          {
+            "period": "2023-09",
+            "value": 3978
+          },
+          {
+            "period": "2023-10",
+            "value": 4212
+          },
+          {
+            "period": "2023-11",
+            "value": 4301
+          },
+          {
+            "period": "2023-12",
+            "value": 4018
+          }
+        ],
+        "latest": 4018,
+        "previous": 4301,
+        "change_pct": -6.58,
+        "slope": 41.26,
+        "overall_trend": "平稳",
+        "points": 6
+      },
+      {
+        "id": "t_avg_order_value",
+        "metric": "avg_order_value",
+        "display_name": "客单价",
+        "periods": [
+          "2023-07",
+          "2023-08",
+          "2023-09",
+          "2023-10",
+          "2023-11",
+          "2023-12"
+        ],
+        "series": [
+          {
+            "period": "2023-07",
+            "value": 304.31
+          },
+          {
+            "period": "2023-08",
+            "value": 306.23
+          },
+          {
+            "period": "2023-09",
+            "value": 302.65
+          },
+          {
+            "period": "2023-10",
+            "value": 315.48
+          },
+          {
+            "period": "2023-11",
+            "value": 325.39
+          },
+          {
+            "period": "2023-12",
+            "value": 269.84
+          }
+        ],
+        "latest": 269.84,
+        "previous": 325.39,
+        "change_pct": -17.07,
+        "slope": -4.58,
+        "overall_trend": "下降",
+        "points": 6
+      },
+      {
+        "id": "t_gross_margin_rate",
+        "metric": "gross_margin_rate",
+        "display_name": "毛利率",
+        "periods": [
+          "2023-07",
+          "2023-08",
+          "2023-09",
+          "2023-10",
+          "2023-11",
+          "2023-12"
+        ],
+        "series": [
+          {
+            "period": "2023-07",
+            "value": 0.309
+          },
+          {
+            "period": "2023-08",
+            "value": 0.301
+          },
+          {
+            "period": "2023-09",
+            "value": 0.296
+          },
+          {
+            "period": "2023-10",
+            "value": 0.291
+          },
+          {
+            "period": "2023-11",
+            "value": 0.286
+          },
+          {
+            "period": "2023-12",
+            "value": 0.214
+          }
+        ],
+        "latest": 0.214,
+        "previous": 0.286,
+        "change_pct": -25.17,
+        "slope": -0.0144,
+        "overall_trend": "下降",
+        "points": 6
+      },
+      {
+        "id": "t_discount_rate",
+        "metric": "discount_rate",
+        "display_name": "折扣率",
+        "periods": [
+          "2023-07",
+          "2023-08",
+          "2023-09",
+          "2023-10",
+          "2023-11",
+          "2023-12"
+        ],
+        "series": [
+          {
+            "period": "2023-07",
+            "value": 0.106
+          },
+          {
+            "period": "2023-08",
+            "value": 0.111
+          },
+          {
+            "period": "2023-09",
+            "value": 0.119
+          },
+          {
+            "period": "2023-10",
+            "value": 0.127
+          },
+          {
+            "period": "2023-11",
+            "value": 0.132
+          },
+          {
+            "period": "2023-12",
+            "value": 0.211
+          }
+        ],
+        "latest": 0.211,
+        "previous": 0.132,
+        "change_pct": 59.85,
+        "slope": 0.0171,
+        "overall_trend": "上升",
+        "points": 6
+      }
+    ],
+    "anomalies": [
+      {
+        "id": "a_Total Amt",
+        "metric": "Total Amt",
+        "display_name": "销售额",
+        "period": "2023-12",
+        "severity": "high",
+        "confidence": "high",
+        "is_anomaly": true,
+        "change_pct": -22.52,
+        "direction": "down",
+        "score": 2.84,
+        "detail": "12 月销售额较 11 月下降 22.52%，跌幅超过近 6 个月正常波动区间。"
+      },
+      {
+        "id": "a_gross_margin_rate",
+        "metric": "gross_margin_rate",
+        "display_name": "毛利率",
+        "period": "2023-12",
+        "severity": "high",
+        "confidence": "high",
+        "is_anomaly": true,
+        "change_pct": -25.17,
+        "direction": "down",
+        "score": 3.12,
+        "detail": "毛利率从 28.6% 降至 21.4%，同时折扣率上升，疑似促销让利或商品结构变化。"
+      },
+      {
+        "id": "a_discount_rate",
+        "metric": "discount_rate",
+        "display_name": "折扣率",
+        "period": "2023-12",
+        "severity": "medium",
+        "confidence": "high",
+        "is_anomaly": true,
+        "change_pct": 59.85,
+        "direction": "up",
+        "score": 2.67,
+        "detail": "折扣率较 11 月上升 7.9 个百分点，是毛利率下滑的重要嫌疑因素。"
+      }
+    ],
+    "cross_anomalies": [
+      {
+        "id": "x_Total Amt_discount_rate",
+        "type": "direction_divergence",
+        "metrics": [
+          "Total Amt",
+          "discount_rate"
+        ],
+        "severity": "medium",
+        "detail": "销售额 -22.5% 与折扣率 +59.9% 方向背离，说明促销折扣没有带来销量或销售额增长。"
+      },
+      {
+        "id": "x_Qty_avg_order_value",
+        "type": "driver_mismatch",
+        "metrics": [
+          "Qty",
+          "avg_order_value"
+        ],
+        "severity": "medium",
+        "detail": "销量仅下降 6.6%，但客单价下降 17.1%，销售额下滑主要由客单价走低驱动。"
+      }
+    ],
+    "dimension_anomalies": [
+      {
+        "id": "d_Product Category_gross_margin_rate_Electronics",
+        "type": "dimension_slice",
+        "dimension": "Product Category",
+        "slice_value": "Electronics",
+        "metric": "gross_margin_rate",
+        "display_name": "毛利率",
+        "z": -2.41,
+        "slice_mean": 0.168,
+        "overall_mean": 0.288,
+        "severity": "high",
+        "detail": "Electronics 品类毛利率显著低于整体均值，且 12 月折扣集中。"
+      },
+      {
+        "id": "d_City_Total Amt_Shanghai",
+        "type": "dimension_slice",
+        "dimension": "City",
+        "slice_value": "Shanghai",
+        "metric": "Total Amt",
+        "display_name": "销售额",
+        "z": -1.86,
+        "slice_mean": 484.2,
+        "overall_mean": 601.85,
+        "severity": "medium",
+        "detail": "上海区域单均销售额低于整体水平，且 12 月下降幅度最大。"
+      }
+    ],
+    "fence_violations": [
+      {
+        "id": "f_gross_margin_rate",
+        "metric": "gross_margin_rate",
+        "display_name": "毛利率",
+        "bounds": {
+          "min": 0.05,
+          "max": 0.65
+        },
+        "violation_count": 247,
+        "total_count": 23053,
+        "violation_rate": 1.0714,
+        "samples": [
+          {
+            "value": -0.08,
+            "side": "min",
+            "dims": {
+              "Date": "2023-12-08",
+              "Store Type": "Flagship",
+              "City": "Shanghai",
+              "Product Category": "Electronics",
+              "Payment Method": "Credit Card"
+            }
+          },
+          {
+            "value": -0.03,
+            "side": "min",
+            "dims": {
+              "Date": "2023-12-15",
+              "Store Type": "Mall",
+              "City": "Beijing",
+              "Product Category": "Electronics",
+              "Payment Method": "Wallet"
+            }
+          },
+          {
+            "value": 0.72,
+            "side": "max",
+            "dims": {
+              "Date": "2023-11-21",
+              "Store Type": "Community",
+              "City": "Hangzhou",
+              "Product Category": "Beauty",
+              "Payment Method": "Cash"
+            }
+          }
+        ]
+      },
+      {
+        "id": "f_discount_rate",
+        "metric": "discount_rate",
+        "display_name": "折扣率",
+        "bounds": {
+          "min": 0.0,
+          "max": 0.45
+        },
+        "violation_count": 91,
+        "total_count": 23053,
+        "violation_rate": 0.3947,
+        "samples": [
+          {
+            "value": 0.58,
+            "side": "max",
+            "dims": {
+              "Date": "2023-12-10",
+              "Store Type": "Flagship",
+              "City": "Shanghai",
+              "Product Category": "Electronics",
+              "Payment Method": "Credit Card"
+            }
+          },
+          {
+            "value": 0.51,
+            "side": "max",
+            "dims": {
+              "Date": "2023-12-18",
+              "Store Type": "Mall",
+              "City": "Guangzhou",
+              "Product Category": "Home",
+              "Payment Method": "Wallet"
+            }
+          }
+        ]
+      }
+    ],
+    "attributions": [
+      {
+        "id": "attr_avg_order_value",
+        "metric": "avg_order_value",
+        "method": "LMDI",
+        "expression": "Total Amt / Qty",
+        "before": {
+          "Total Amt": 1399460.8,
+          "Qty": 4301
+        },
+        "after": {
+          "Total Amt": 1084210.5,
+          "Qty": 4018
+        },
+        "contributions": [
+          {
+            "factor": "Total Amt",
+            "delta": -315250.3,
+            "pct": 82.6,
+            "detail": "销售额下降解释了客单价下降的大部分变化。"
+          },
+          {
+            "factor": "Qty",
+            "delta": -283,
+            "pct": 17.4,
+            "detail": "销量下降带来次要影响。"
+          }
+        ]
+      },
+      {
+        "id": "attr_gross_margin_rate",
+        "metric": "gross_margin_rate",
+        "method": "additive",
+        "expression": "gross_margin / Total Amt",
+        "before": {
+          "gross_margin": 400245.8,
+          "Total Amt": 1399460.8
+        },
+        "after": {
+          "gross_margin": 232019.1,
+          "Total Amt": 1084210.5
+        },
+        "contributions": [
+          {
+            "factor": "gross_margin",
+            "delta": -168226.7,
+            "pct": 74.2,
+            "detail": "毛利额收缩是毛利率下降的主要来源。"
+          },
+          {
+            "factor": "Total Amt",
+            "delta": -315250.3,
+            "pct": 25.8,
+            "detail": "销售额基数下降放大了毛利率波动。"
+          }
+        ]
+      },
+      {
+        "id": "attr_dim_Total Amt_Product Category",
+        "metric": "Total Amt",
+        "method": "dimension_share",
+        "dimension": "Product Category",
+        "top_contributors": [
+          {
+            "value": "Electronics",
+            "sum": 3962140.5,
+            "share_pct": 28.56
+          },
+          {
+            "value": "Fashion",
+            "sum": 2842160.2,
+            "share_pct": 20.49
+          },
+          {
+            "value": "Home",
+            "sum": 2198750.4,
+            "share_pct": 15.85
+          },
+          {
+            "value": "Beauty",
+            "sum": 1854920.1,
+            "share_pct": 13.37
+          },
+          {
+            "value": "Food",
+            "sum": 1258060.8,
+            "share_pct": 9.07
+          }
+        ]
+      },
+      {
+        "id": "attr_dim_Total Amt_City",
+        "metric": "Total Amt",
+        "method": "dimension_share",
+        "dimension": "City",
+        "top_contributors": [
+          {
+            "value": "Shanghai",
+            "sum": 3182210.9,
+            "share_pct": 22.94
+          },
+          {
+            "value": "Beijing",
+            "sum": 2716044.2,
+            "share_pct": 19.58
+          },
+          {
+            "value": "Guangzhou",
+            "sum": 2251020.7,
+            "share_pct": 16.22
+          },
+          {
+            "value": "Shenzhen",
+            "sum": 1948200.3,
+            "share_pct": 14.04
+          },
+          {
+            "value": "Hangzhou",
+            "sum": 1298810.5,
+            "share_pct": 9.36
+          }
+        ]
+      },
+      {
+        "id": "attr_dim_gross_margin_rate_Store Type",
+        "metric": "gross_margin_rate",
+        "method": "dimension_share",
+        "dimension": "Store Type",
+        "top_contributors": [
+          {
+            "value": "Flagship",
+            "sum": 2210.6,
+            "share_pct": 33.34
+          },
+          {
+            "value": "Mall",
+            "sum": 1988.4,
+            "share_pct": 29.99
+          },
+          {
+            "value": "Community",
+            "sum": 1460.2,
+            "share_pct": 22.03
+          },
+          {
+            "value": "Outlet",
+            "sum": 970.5,
+            "share_pct": 14.64
+          }
+        ]
+      }
+    ]
+  },
+  "insights": [],
+  "final_insights": [],
+  "critic_review": {
+    "verdicts": []
+  },
+  "errors": []
+}

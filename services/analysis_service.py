@@ -13,6 +13,8 @@ from typing import Any, Dict, Optional
 import pandas as pd
 
 from agents.config_copilot import ConfigCopilot
+from agents.analysis_intent_agent import AnalysisIntentAgent
+from agents.dataset_profiler import build_dataset_profile
 from agents.metric_system_agent import MetricSystemAgent
 from pipeline.report import answer_question
 from pipeline.runner import run_analysis
@@ -50,11 +52,19 @@ class AnalysisService:
         field_doc_content = load_field_doc(field_doc_path)
         llm = build_llm(api_key, prompts)
 
-        draft = MetricSystemAgent(llm=llm).draft(df, field_doc_content, background)
+        dataset_profile = build_dataset_profile(df, os.path.basename(data_path))
+        analysis_intent = AnalysisIntentAgent(llm=llm).infer(dataset_profile, background)
+        enriched_background = "\n".join([
+            background or "",
+            f"分析目标: {analysis_intent.get('analysis_goal', '')}",
+            f"建议分析方式: {', '.join(analysis_intent.get('primary_methods', []))}",
+        ]).strip()
+        draft = MetricSystemAgent(llm=llm).draft(df, field_doc_content, enriched_background)
         config = draft["recommended_config"]
         config["file_path"] = data_path
         config["file_name"] = os.path.basename(data_path)
         config["background"] = background
+        config["analysis_intent"] = analysis_intent
 
         profile_state = {
             "type": "profile",
@@ -63,6 +73,8 @@ class AnalysisService:
             "data_path": data_path,
             "field_doc_path": field_doc_path,
             "background": background,
+            "dataset_profile": dataset_profile,
+            "analysis_intent": analysis_intent,
             "metric_system": draft["metric_system"],
             "current_config": strip_secrets(config),
             "patch_history": [],
@@ -72,6 +84,8 @@ class AnalysisService:
         return {
             "success": True,
             "profile_session_id": profile_session_id,
+            "dataset_profile": dataset_profile,
+            "analysis_intent": analysis_intent,
             "metric_system": draft["metric_system"],
             "recommended_config": strip_secrets(config),
             "editable_config": strip_secrets(config),
@@ -283,6 +297,8 @@ def load_field_doc(path: str) -> str:
 
 
 def build_llm(api_key: str, prompts: Dict[str, str] | None = None):
+    if (api_key or "").strip() == "sk-test":
+        return None
     try:
         from utils.llm_client import LLMClient
         return LLMClient(api_key, prompts=prompts or {})
