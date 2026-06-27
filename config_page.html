@@ -275,8 +275,24 @@ function formatConfig(){ setConfig(readConfig()); }
 function appendMsg(id,who,text){ const box=document.getElementById(id); box.innerHTML+=`<p class="msg"><b>${escapeHtml(who)}</b>：${escapeHtml(text)}</p>`; box.scrollTop=box.scrollHeight; }
 function setStatus(id,text,ok=false,err=false){ const el=document.getElementById(id); el.className=err?'status error':ok?'status ok':'status'; el.textContent=text; }
 function renderWarningsText(warnings){ return warnings&&warnings.length ? `\n提示：${warnings.join('；')}` : ''; }
-async function postForm(path,fd){ const r=await fetch(API_BASE+path,{method:'POST',body:fd}); const data=await r.json(); if(!data.success) throw new Error(data.error||'请求失败'); return data; }
-async function postJson(path,payload){ const r=await fetch(API_BASE+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); const data=await r.json(); if(!data.success) throw new Error(data.error||'请求失败'); return data; }
+async function parseApiResponse(r){
+  const text = await r.text();
+  let data = null;
+  try { data = text ? JSON.parse(text) : null; } catch(e) {}
+  if(!r.ok || !data || data.success === false){
+    const detail = data?.error || text || `HTTP ${r.status}`;
+    throw new Error(detail);
+  }
+  return data;
+}
+async function postForm(path,fd){
+  const r=await fetch(API_BASE+path,{method:'POST',body:fd});
+  return parseApiResponse(r);
+}
+async function postJson(path,payload){
+  const r=await fetch(API_BASE+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  return parseApiResponse(r);
+}
 function escapeHtml(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 loadSettings();
 </script>
