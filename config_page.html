@@ -8,16 +8,18 @@
 :root{--primary:#1a73e8;--success:#188038;--danger:#c5221f;--warn:#b06000;--bg:#f6f7f9;--card:#fff;--border:#dadce0;--text:#202124;--muted:#5f6368}
 *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif;line-height:1.6}
 .app{max-width:1180px;margin:0 auto;padding:24px}.top{display:flex;align-items:center;gap:16px;margin-bottom:18px}.top h1{font-size:24px;margin:0;color:var(--primary)}.top p{margin:4px 0 0;color:var(--muted);font-size:13px}.spacer{flex:1}
-.btn{border:0;border-radius:6px;padding:9px 14px;font-size:14px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}.btn:disabled{opacity:.55;cursor:not-allowed}.primary{background:var(--primary);color:#fff}.secondary{background:#fff;border:1px solid var(--border);color:var(--text)}.success{background:var(--success);color:#fff}
+.btn{border:0;border-radius:6px;padding:9px 14px;font-size:14px;cursor:pointer;display:inline-flex;gap:6px;align-items:center;justify-content:center}.btn:disabled{opacity:.55;cursor:not-allowed}.primary{background:var(--primary);color:#fff}.secondary{background:#fff;border:1px solid var(--border);color:var(--text)}.success{background:var(--success);color:#fff}.dangerBtn{background:#fff;border:1px solid #fad2cf;color:var(--danger)}
 .grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px}.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:14px}.card h2{font-size:17px;margin:0 0 12px;color:var(--primary)}.card h3{font-size:14px;margin:14px 0 8px}
-label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}input,textarea,select{width:100%;border:1px solid var(--border);border-radius:6px;padding:9px 10px;font:inherit;background:#fff}textarea{resize:vertical}.row{display:flex;gap:10px;align-items:center}.row>*{flex:1}
+label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}input,textarea,select{width:100%;border:1px solid var(--border);border-radius:6px;padding:9px 10px;font:inherit;background:#fff}textarea{resize:vertical}.row{display:flex;gap:10px;align-items:center}.row>*{flex:1}.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .hint{font-size:12px;color:var(--muted);margin-top:6px}.status{font-size:13px;padding:10px 12px;border-radius:6px;background:#e8f0fe;color:var(--primary);margin-top:10px}.error{background:#fce8e6;color:var(--danger)}.ok{background:#e6f4ea;color:var(--success)}
 .pill{display:inline-block;border-radius:12px;padding:2px 8px;background:#e8f0fe;color:var(--primary);font-size:12px;margin:2px}.warn{background:#fef7e0;color:var(--warn)}.danger{background:#fce8e6;color:var(--danger)}
-table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:7px 8px;border-bottom:1px solid #eee;text-align:left}th{background:#f8f9fa;color:var(--muted)}
-.json{font-family:Consolas,Menlo,monospace;font-size:12px;min-height:360px}.chat{height:310px;overflow:auto;border:1px solid var(--border);border-radius:6px;padding:10px;background:#fafafa}.msg{margin:0 0 10px;font-size:13px}.msg b{color:var(--primary)}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:7px 8px;border-bottom:1px solid #eee;text-align:left;vertical-align:top}th{background:#f8f9fa;color:var(--muted)}td input,td select{padding:6px 8px;font-size:13px}.mini{width:92px}.checkcell{text-align:center;width:72px}.sectionTitle{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.chat{height:310px;overflow:auto;border:1px solid var(--border);border-radius:6px;padding:10px;background:#fafafa}.msg{margin:0 0 10px;font-size:13px}.msg b{color:var(--primary)}
 .drawer{position:fixed;right:0;top:0;bottom:0;width:min(520px,100%);background:#fff;border-left:1px solid var(--border);box-shadow:-8px 0 24px #0002;padding:20px;overflow:auto;z-index:5;display:none}.drawer.open{display:block}.overlay{position:fixed;inset:0;background:#0003;display:none;z-index:4}.overlay.open{display:block}
+.uploadPage{max-width:760px;margin:26px auto}.fileBox{border:1px dashed #b8c7e6;border-radius:8px;background:#fff;padding:18px}.summaryGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.summaryItem{border:1px solid var(--border);border-radius:8px;padding:12px;background:#fff}.summaryItem b{display:block;font-size:20px;color:var(--primary)}.preview{max-height:260px;overflow:auto;border:1px solid var(--border);border-radius:8px}
 iframe{width:100%;height:640px;border:1px solid var(--border);border-radius:8px;background:#fff}
-@media(max-width:920px){.grid{grid-template-columns:1fr}.top{align-items:flex-start}.top .spacer{display:none}}
+.hidden{display:none!important}
+@media(max-width:920px){.grid{grid-template-columns:1fr}.top{align-items:flex-start}.top .spacer{display:none}.summaryGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.row{flex-direction:column;align-items:stretch}}
 </style>
 </head>
 <body>
@@ -27,7 +29,7 @@ iframe{width:100%;height:640px;border:1px solid var(--border);border-radius:8px;
   <div class="card">
     <h3>API Key</h3>
     <input type="password" id="settingApiKey" placeholder="sk-...">
-    <p class="hint">仅保存在浏览器 localStorage。提交分析时随请求发送。</p>
+    <p class="hint">仅保存在浏览器 localStorage。若服务端已配置环境变量，可留空。</p>
   </div>
   <div class="card">
     <h3>Prompt 模板</h3>
@@ -49,74 +51,112 @@ iframe{width:100%;height:640px;border:1px solid var(--border);border-radius:8px;
   <header class="top">
     <div>
       <h1>单表经营分析 AI 应用</h1>
-      <p>上传一张表，确认指标体系，通过配置助手微调后生成稳定经营报告。</p>
+      <p id="pageSubtitle">上传数据表，生成可调整的分析配置，再产出经营分析报告。</p>
     </div>
     <div class="spacer"></div>
     <button class="btn secondary" onclick="openSettings()">设置</button>
   </header>
 
-  <section class="card">
-    <h2>1. 上传单表并生成指标体系</h2>
-    <div class="row">
-      <div><label>数据文件</label><input type="file" id="fileInput" accept=".xlsx,.xls,.csv"></div>
-      <div><label>字段说明（可选）</label><input type="file" id="fieldDocInput" accept=".txt,.md,.xlsx,.xls,.csv"></div>
-    </div>
-    <label style="margin-top:10px">业务背景 / 分析目标（可选）</label>
-    <textarea id="backgroundInput" rows="3" placeholder="例如：本月销售下滑，希望定位核心原因和重点维度。"></textarea>
-    <div class="row" style="margin-top:12px">
-      <button class="btn primary" id="profileBtn" onclick="runProfile()">生成指标体系草案</button>
-      <div id="profileStatus" class="hint"></div>
+  <section id="uploadPage" class="uploadPage">
+    <div class="card">
+      <h2>上传数据表</h2>
+      <div class="fileBox">
+        <div class="row">
+          <div><label>数据文件</label><input type="file" id="fileInput" accept=".xlsx,.xls,.csv"></div>
+          <div><label>字段说明（可选）</label><input type="file" id="fieldDocInput" accept=".txt,.md,.xlsx,.xls,.csv"></div>
+        </div>
+        <label style="margin-top:12px">业务背景 / 分析目标（可选）</label>
+        <textarea id="backgroundInput" rows="4" placeholder="例如：本月销售下滑，希望定位核心原因和重点维度。"></textarea>
+      </div>
+      <div class="actions" style="margin-top:14px">
+        <button class="btn primary" id="profileBtn" onclick="runProfile()">生成分析配置</button>
+        <div id="profileStatus" class="hint"></div>
+      </div>
     </div>
   </section>
 
-  <div class="grid">
-    <section>
-      <div class="card" id="metricSystemCard" style="display:none">
-        <h2>2. 指标体系草案</h2>
-        <div id="metricSystemView"></div>
-      </div>
-      <div class="card" id="configCard" style="display:none">
-        <h2>3. 确认 / 编辑配置</h2>
-        <p class="hint">配置助手会更新这里的 JSON。你也可以直接编辑，生成报告前会提交这份确认配置。</p>
-        <textarea id="configEditor" class="json"></textarea>
-        <div class="row" style="margin-top:10px">
-          <button class="btn success" id="analyzeBtn" onclick="runAnalyze()">确认配置并生成报告</button>
-          <button class="btn secondary" onclick="formatConfig()">格式化 JSON</button>
+  <section id="workspacePage" class="hidden">
+    <div class="grid">
+      <section>
+        <div class="card">
+          <div class="sectionTitle">
+            <h2>确认 / 编辑配置</h2>
+            <button class="btn secondary" onclick="restartUpload()">重新上传</button>
+          </div>
+          <p class="hint">这里展示的是结构化配置，可直接修改；右侧也可以用自然语言让配置助手调整。</p>
+          <div id="configSummary" class="summaryGrid"></div>
+          <div id="configWarnings"></div>
         </div>
-      </div>
-      <div class="card" id="reportCard" style="display:none">
-        <h2>4. 经营分析报告</h2>
-        <div id="reportStatus" class="status ok"></div>
-        <iframe id="reportFrame"></iframe>
-      </div>
-    </section>
 
-    <aside>
-      <div class="card">
-        <h2>配置对话助手</h2>
-        <div id="configChat" class="chat"><p class="msg"><b>助手</b>：生成指标体系后，可以说“把利润率阈值改成 15%-60%”或“把销售额设为核心指标”。</p></div>
-        <textarea id="configMessage" rows="3" placeholder="输入配置修改要求..."></textarea>
-        <div class="row" style="margin-top:8px">
-          <button class="btn primary" onclick="sendConfigChat()">发送修改</button>
-          <button class="btn secondary" onclick="undoConfigPatch()">撤销</button>
+        <div class="card">
+          <div class="sectionTitle">
+            <h3>字段角色</h3>
+          </div>
+          <div id="fieldConfigView"></div>
         </div>
-      </div>
-      <div class="card" id="reportChatCard" style="display:none">
-        <h2>报告问答</h2>
-        <div id="reportChat" class="chat"></div>
-        <textarea id="reportQuestion" rows="3" placeholder="问报告里的趋势、异常、统计..."></textarea>
-        <button class="btn primary" style="margin-top:8px" onclick="sendReportChat()">提问</button>
-      </div>
-    </aside>
-  </div>
+
+        <div class="card">
+          <div class="sectionTitle">
+            <h3>派生指标</h3>
+            <button class="btn secondary" onclick="addFormulaRow()">添加公式</button>
+          </div>
+          <div id="formulaConfigView"></div>
+        </div>
+
+        <div class="card">
+          <div class="sectionTitle">
+            <h3>规则与阈值</h3>
+          </div>
+          <div id="ruleConfigView"></div>
+        </div>
+
+        <div class="card">
+          <h3>数据预览</h3>
+          <div id="dataPreviewView" class="preview"></div>
+        </div>
+
+        <div class="card">
+          <div class="actions">
+            <button class="btn success" id="analyzeBtn" onclick="runAnalyze()">确认配置并生成报告</button>
+            <div id="analyzeStatus" class="hint"></div>
+          </div>
+        </div>
+
+        <div class="card hidden" id="reportCard">
+          <h2>经营分析报告</h2>
+          <div id="reportStatus" class="status ok"></div>
+          <iframe id="reportFrame"></iframe>
+        </div>
+      </section>
+
+      <aside>
+        <div class="card">
+          <h2>配置对话助手</h2>
+          <div id="configChat" class="chat"><p class="msg"><b>助手</b>：配置生成后，你可以说“把利润率阈值改成 15%-60%”或“把销售额设为核心指标”。</p></div>
+          <textarea id="configMessage" rows="3" placeholder="输入配置修改要求..."></textarea>
+          <div class="row" style="margin-top:8px">
+            <button class="btn primary" onclick="sendConfigChat()">发送修改</button>
+            <button class="btn secondary" onclick="undoConfigPatch()">撤销</button>
+          </div>
+        </div>
+        <div class="card hidden" id="reportChatCard">
+          <h2>报告问答</h2>
+          <div id="reportChat" class="chat"></div>
+          <textarea id="reportQuestion" rows="3" placeholder="问报告里的趋势、异常、统计..."></textarea>
+          <button class="btn primary" style="margin-top:8px" onclick="sendReportChat()">提问</button>
+        </div>
+      </aside>
+    </div>
+  </section>
 </main>
 
 <script>
 const API_BASE = '';
 let profileSessionId = '';
 let analysisSessionId = '';
-let currentMetricSystem = null;
 let currentConfig = null;
+let currentPreview = null;
+let currentWarnings = [];
 
 const defaultPrompts = {
   metric_system: '根据字段画像生成保守可验证的指标体系草案。',
@@ -164,41 +204,47 @@ function rememberSession(session){
   s.sessions.unshift(session); s.sessions=s.sessions.slice(0,20);
   localStorage.setItem('analysisAppSettings', JSON.stringify(s));
 }
-function requireApiKey(){
-  const key = getSettings().apiKey || '';
-  return key;
-}
+function requireApiKey(){ return getSettings().apiKey || ''; }
 function prompts(){ return getSettings().prompts || {}; }
 
 async function runProfile(){
   try{
-    const key=requireApiKey();
     const file=document.getElementById('fileInput').files[0];
     if(!file) throw new Error('请上传数据文件');
-    setStatus('profileStatus','正在生成指标体系...',false);
+    setStatus('profileStatus','正在生成分析配置...',false);
     document.getElementById('profileBtn').disabled=true;
     const fd=new FormData();
-    fd.append('api_key',key);
+    fd.append('api_key',requireApiKey());
     fd.append('file',file);
     fd.append('background',document.getElementById('backgroundInput').value);
     fd.append('prompts',JSON.stringify(prompts()));
     const doc=document.getElementById('fieldDocInput').files[0]; if(doc) fd.append('field_doc',doc);
     const data=await postForm('/profile',fd);
     profileSessionId=data.profile_session_id;
-    currentMetricSystem=data.metric_system;
     currentConfig=data.editable_config || data.recommended_config;
-    renderMetricSystem(data);
+    currentPreview=data.data_preview || null;
+    currentWarnings=data.warnings || [];
     setConfig(currentConfig);
-    document.getElementById('metricSystemCard').style.display='block';
-    document.getElementById('configCard').style.display='block';
-    setStatus('profileStatus',`指标体系已生成：${profileSessionId}`,true);
+    showWorkspace();
   }catch(e){ setStatus('profileStatus',e.message,false,true); }
   finally{ document.getElementById('profileBtn').disabled=false; }
 }
 
+function showWorkspace(){
+  document.getElementById('uploadPage').classList.add('hidden');
+  document.getElementById('workspacePage').classList.remove('hidden');
+  document.getElementById('pageSubtitle').textContent = '调整配置、生成报告，并基于报告继续问答。';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function restartUpload(){
+  document.getElementById('workspacePage').classList.add('hidden');
+  document.getElementById('uploadPage').classList.remove('hidden');
+  document.getElementById('pageSubtitle').textContent = '上传数据表，生成可调整的分析配置，再产出经营分析报告。';
+}
+
 async function sendConfigChat(){
   try{
-    if(!profileSessionId) throw new Error('请先生成指标体系草案');
+    if(!profileSessionId) throw new Error('请先上传数据并生成配置');
     const msg=document.getElementById('configMessage').value.trim();
     if(!msg) return;
     appendMsg('configChat','你',msg);
@@ -209,6 +255,7 @@ async function sendConfigChat(){
       current_config: readConfig(),
       prompts: prompts()
     });
+    currentWarnings = data.warnings || [];
     setConfig(data.updated_config);
     appendMsg('configChat','助手',data.reply + renderWarningsText(data.warnings));
     document.getElementById('configMessage').value='';
@@ -219,6 +266,7 @@ async function undoConfigPatch(){
   try{
     if(!profileSessionId) throw new Error('没有可撤销的配置会话');
     const data=await postJson('/config-chat',{api_key:requireApiKey(),profile_session_id:profileSessionId,undo:true});
+    currentWarnings = data.warnings || [];
     setConfig(data.updated_config);
     appendMsg('configChat','助手',data.reply);
   }catch(e){ appendMsg('configChat','系统',e.message); }
@@ -226,22 +274,23 @@ async function undoConfigPatch(){
 
 async function runAnalyze(){
   try{
-    const key=requireApiKey();
     const config=readConfig();
     document.getElementById('analyzeBtn').disabled=true;
+    setStatus('analyzeStatus','正在生成报告...',false);
     const fd=new FormData();
-    fd.append('api_key',key);
+    fd.append('api_key',requireApiKey());
     fd.append('profile_session_id',profileSessionId);
     fd.append('config',JSON.stringify(config));
     fd.append('prompts',JSON.stringify(prompts()));
     const data=await postForm('/analyze',fd);
     analysisSessionId=data.session_id;
     rememberSession({session_id:data.session_id,file_name:config.file_name,created_at:new Date().toISOString()});
-    document.getElementById('reportCard').style.display='block';
-    document.getElementById('reportChatCard').style.display='block';
+    document.getElementById('reportCard').classList.remove('hidden');
+    document.getElementById('reportChatCard').classList.remove('hidden');
     document.getElementById('reportStatus').textContent=`报告已生成：${data.session_id} · ${data.summary.total} 条洞察 · Critic 修订 ${data.summary.critic_revisions || 0} 条`;
     document.getElementById('reportFrame').src=`/report/${data.session_id}`;
-  }catch(e){ alert(e.message); }
+    setStatus('analyzeStatus','报告生成完成',true);
+  }catch(e){ setStatus('analyzeStatus',e.message,false,true); }
   finally{ document.getElementById('analyzeBtn').disabled=false; }
 }
 
@@ -256,22 +305,141 @@ async function sendReportChat(){
   }catch(e){ appendMsg('reportChat','系统',e.message); }
 }
 
-function renderMetricSystem(data){
-  const ms=data.metric_system || {};
-  const preview=data.data_preview || {};
-  const html=[
-    `<p><span class="pill">模板：${escapeHtml(ms.template||'general')}</span><span class="pill">来源：${escapeHtml(ms.source||data.source||'')}</span></p>`,
-    `<h3>数据预览</h3><p class="hint">${preview.rows||0} 行 · ${preview.columns||0} 列</p>`,
-    `<h3>核心指标</h3><p>${(ms.primary_metrics||[]).map(x=>`<span class="pill">${escapeHtml(x)}</span>`).join('')||'暂无'}</p>`,
-    `<h3>指标分组</h3>${Object.entries(ms.metric_groups||{}).map(([k,v])=>`<p><b>${escapeHtml(k)}</b> ${(v||[]).map(x=>`<span class="pill">${escapeHtml(x)}</span>`).join('')}</p>`).join('')}`,
-    `<h3>Warnings</h3><p>${(data.warnings||ms.warnings||[]).map(x=>`<span class="pill warn">${escapeHtml(x)}</span>`).join('')||'无'}</p>`
-  ].join('');
-  document.getElementById('metricSystemView').innerHTML=html;
+function setConfig(cfg){
+  currentConfig = structuredClone(cfg || {});
+  renderConfigUI();
+}
+function readConfig(){
+  const cfg = structuredClone(currentConfig || {});
+  cfg.dimensions = Array.from(document.querySelectorAll('[data-dim-row]')).map(row => ({
+    idx: numberOrNull(row.dataset.idx),
+    name: row.dataset.name,
+    displayName: row.querySelector('[data-display]').value.trim() || row.dataset.name,
+    type: 'dimension'
+  }));
+  cfg.metrics = Array.from(document.querySelectorAll('[data-metric-row]')).map(row => ({
+    idx: numberOrNull(row.dataset.idx),
+    name: row.dataset.name,
+    displayName: row.querySelector('[data-display]').value.trim() || row.dataset.name,
+    agg: row.querySelector('[data-agg]').value || 'sum'
+  }));
+  cfg.formulas = Array.from(document.querySelectorAll('[data-formula-row]')).map(row => ({
+    name: row.querySelector('[data-formula-name]').value.trim(),
+    expression: row.querySelector('[data-formula-expression]').value.trim()
+  })).filter(x => x.name && x.expression);
+  cfg.primary_metrics = Array.from(document.querySelectorAll('[data-primary]:checked')).map(x => x.value);
+  cfg.drill_order = Array.from(document.querySelectorAll('[data-drill]:checked')).map(x => x.value);
+  cfg.fences = Array.from(document.querySelectorAll('[data-fence-row]')).map(row => ({
+    name: row.querySelector('[data-rule-metric]').value,
+    min: parseOptionalFloat(row.querySelector('[data-fence-min]').value),
+    max: parseOptionalFloat(row.querySelector('[data-fence-max]').value)
+  })).filter(x => x.name && (x.min !== null || x.max !== null));
+  cfg.anomalies = Array.from(document.querySelectorAll('[data-anomaly-row]')).map(row => ({
+    name: row.querySelector('[data-rule-metric]').value,
+    downThreshold: parseOptionalFloat(row.querySelector('[data-down]').value),
+    upThreshold: parseOptionalFloat(row.querySelector('[data-up]').value)
+  })).filter(x => x.name && (x.downThreshold !== null || x.upThreshold !== null));
+  currentConfig = cfg;
+  return cfg;
 }
 
-function setConfig(cfg){ currentConfig=cfg; document.getElementById('configEditor').value=JSON.stringify(cfg,null,2); }
-function readConfig(){ return JSON.parse(document.getElementById('configEditor').value); }
-function formatConfig(){ setConfig(readConfig()); }
+function renderConfigUI(){
+  const cfg=currentConfig || {};
+  const dims=cfg.dimensions || [];
+  const metrics=cfg.metrics || [];
+  const formulas=cfg.formulas || [];
+  const allMetricNames=metrics.map(x=>x.name).concat(formulas.map(x=>x.name));
+  document.getElementById('configSummary').innerHTML=[
+    summaryItem('文件', cfg.file_name || '-'),
+    summaryItem('维度', dims.length),
+    summaryItem('指标', metrics.length),
+    summaryItem('派生指标', formulas.length)
+  ].join('');
+  document.getElementById('configWarnings').innerHTML=(currentWarnings||[]).map(x=>`<span class="pill warn">${escapeHtml(x)}</span>`).join('');
+
+  document.getElementById('fieldConfigView').innerHTML = `
+    <h3>维度</h3>${renderDimensions(dims, cfg.drill_order || [])}
+    <h3>指标</h3>${renderMetrics(metrics, cfg.primary_metrics || [], allMetricNames)}
+  `;
+  document.getElementById('formulaConfigView').innerHTML = renderFormulas(formulas);
+  document.getElementById('ruleConfigView').innerHTML = `
+    <h3>围栏阈值</h3>${renderFences(cfg.fences || [], allMetricNames)}
+    <div class="actions" style="margin:8px 0 12px"><button class="btn secondary" onclick="addFenceRow()">添加围栏</button></div>
+    <h3>异动阈值</h3>${renderAnomalies(cfg.anomalies || [], allMetricNames)}
+    <div class="actions" style="margin-top:8px"><button class="btn secondary" onclick="addAnomalyRow()">添加异动阈值</button></div>
+  `;
+  renderPreview();
+}
+function summaryItem(label,value){ return `<div class="summaryItem"><span class="hint">${escapeHtml(label)}</span><b>${escapeHtml(value)}</b></div>`; }
+function renderDimensions(dims, drillOrder){
+  if(!dims.length) return '<p class="hint">暂无维度字段。</p>';
+  return `<table><thead><tr><th>字段</th><th>展示名</th><th class="checkcell">下钻</th></tr></thead><tbody>${dims.map(d=>`
+    <tr data-dim-row data-name="${escapeAttr(d.name)}" data-idx="${escapeAttr(d.idx ?? '')}">
+      <td>${escapeHtml(d.name)}</td>
+      <td><input data-display value="${escapeAttr(d.displayName || d.name)}"></td>
+      <td class="checkcell"><input data-drill type="checkbox" value="${escapeAttr(d.name)}" ${drillOrder.includes(d.name)?'checked':''}></td>
+    </tr>`).join('')}</tbody></table>`;
+}
+function renderMetrics(metrics, primary, allMetricNames){
+  if(!metrics.length) return '<p class="hint">暂无指标字段。</p>';
+  return `<table><thead><tr><th>字段</th><th>展示名</th><th>聚合</th><th class="checkcell">核心</th></tr></thead><tbody>${metrics.map(m=>`
+    <tr data-metric-row data-name="${escapeAttr(m.name)}" data-idx="${escapeAttr(m.idx ?? '')}">
+      <td>${escapeHtml(m.name)}</td>
+      <td><input data-display value="${escapeAttr(m.displayName || m.name)}"></td>
+      <td><select data-agg>${['sum','avg','mean','max','min','count'].map(x=>`<option value="${x}" ${(m.agg||'sum')===x?'selected':''}>${x}</option>`).join('')}</select></td>
+      <td class="checkcell"><input data-primary type="checkbox" value="${escapeAttr(m.name)}" ${primary.includes(m.name)?'checked':''}></td>
+    </tr>`).join('')}</tbody></table>`;
+}
+function renderFormulas(formulas){
+  const rows = formulas.map((f,i)=>formulaRowHtml(f,i)).join('');
+  return `<table><thead><tr><th>名称</th><th>表达式</th><th></th></tr></thead><tbody id="formulaRows">${rows || formulaRowHtml({},0)}</tbody></table>`;
+}
+function formulaRowHtml(f,i){
+  return `<tr data-formula-row>
+    <td><input data-formula-name value="${escapeAttr(f.name || '')}" placeholder="如：利润率"></td>
+    <td><input data-formula-expression value="${escapeAttr(f.expression || '')}" placeholder="如：利润 / 销售额"></td>
+    <td><button class="btn dangerBtn" onclick="this.closest('tr').remove()">移除</button></td>
+  </tr>`;
+}
+function renderFences(fences, names){
+  const rows = fences.map(f=>fenceRowHtml(f,names)).join('');
+  return `<table><thead><tr><th>指标</th><th>最小值</th><th>最大值</th><th></th></tr></thead><tbody id="fenceRows">${rows}</tbody></table>`;
+}
+function fenceRowHtml(f,names){
+  return `<tr data-fence-row>
+    <td>${metricSelect(names,f.name)}</td>
+    <td><input class="mini" data-fence-min value="${escapeAttr(f.min ?? '')}" placeholder="0.1"></td>
+    <td><input class="mini" data-fence-max value="${escapeAttr(f.max ?? '')}" placeholder="0.8"></td>
+    <td><button class="btn dangerBtn" onclick="this.closest('tr').remove()">移除</button></td>
+  </tr>`;
+}
+function renderAnomalies(anomalies, names){
+  const rows = anomalies.map(a=>anomalyRowHtml(a,names)).join('');
+  return `<table><thead><tr><th>指标</th><th>下降阈值%</th><th>上升阈值%</th><th></th></tr></thead><tbody id="anomalyRows">${rows}</tbody></table>`;
+}
+function anomalyRowHtml(a,names){
+  return `<tr data-anomaly-row>
+    <td>${metricSelect(names,a.name)}</td>
+    <td><input class="mini" data-down value="${escapeAttr(a.downThreshold ?? '')}" placeholder="20"></td>
+    <td><input class="mini" data-up value="${escapeAttr(a.upThreshold ?? '')}" placeholder="30"></td>
+    <td><button class="btn dangerBtn" onclick="this.closest('tr').remove()">移除</button></td>
+  </tr>`;
+}
+function metricSelect(names,selected){
+  return `<select data-rule-metric>${names.map(n=>`<option value="${escapeAttr(n)}" ${n===selected?'selected':''}>${escapeHtml(n)}</option>`).join('')}</select>`;
+}
+function addFormulaRow(){ document.getElementById('formulaRows').insertAdjacentHTML('beforeend', formulaRowHtml({},0)); }
+function addFenceRow(){ const cfg=readConfig(); document.getElementById('fenceRows').insertAdjacentHTML('beforeend', fenceRowHtml({}, metricNames(cfg))); }
+function addAnomalyRow(){ const cfg=readConfig(); document.getElementById('anomalyRows').insertAdjacentHTML('beforeend', anomalyRowHtml({}, metricNames(cfg))); }
+function metricNames(cfg){ return (cfg.metrics||[]).map(x=>x.name).concat((cfg.formulas||[]).map(x=>x.name)); }
+function renderPreview(){
+  const preview=currentPreview || {};
+  const rows=preview.sample_rows || [];
+  if(!rows.length){ document.getElementById('dataPreviewView').innerHTML='<p class="hint">暂无预览数据。</p>'; return; }
+  const cols=preview.column_names || Object.keys(rows[0] || {});
+  document.getElementById('dataPreviewView').innerHTML=`<table><thead><tr>${cols.map(c=>`<th>${escapeHtml(c)}</th>`).join('')}</tr></thead><tbody>${rows.slice(0,8).map(r=>`<tr>${cols.map(c=>`<td>${escapeHtml(r[c] ?? '')}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+}
+
 function appendMsg(id,who,text){ const box=document.getElementById(id); box.innerHTML+=`<p class="msg"><b>${escapeHtml(who)}</b>：${escapeHtml(text)}</p>`; box.scrollTop=box.scrollHeight; }
 function setStatus(id,text,ok=false,err=false){ const el=document.getElementById(id); el.className=err?'status error':ok?'status ok':'status'; el.textContent=text; }
 function renderWarningsText(warnings){ return warnings&&warnings.length ? `\n提示：${warnings.join('；')}` : ''; }
@@ -293,7 +461,10 @@ async function postJson(path,payload){
   const r=await fetch(API_BASE+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
   return parseApiResponse(r);
 }
+function parseOptionalFloat(v){ if(v==='' || v==null) return null; const n=Number(v); return Number.isFinite(n)?n:null; }
+function numberOrNull(v){ const n=Number(v); return Number.isFinite(n)?n:null; }
 function escapeHtml(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeAttr(s){ return escapeHtml(s); }
 loadSettings();
 </script>
 </body>
